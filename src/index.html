@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="stylesheet" href="styles.css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Tauri App</title>
+    <script type="module" src="/main.js" defer></script>
+  </head>
+
+ <body>
+  <div class="card">
+    <h1>Tauri Counter</h1>
+    <div id="counter">0</div>
+    <button id="btn">click me!f</button>
+    <div id="error" class="error"></div>
+  </div>
+
+  <script type="module">
+    import { invoke } from '@tauri-apps/api/tauri';
+
+    const counterEl = document.getElementById("counter");
+    const btn = document.getElementById("btn");
+    const errorEl = document.getElementById("error");
+
+    // Load initial counter
+    async function loadCounter() {
+      try {
+        const value = await invoke("get_counter");
+        counterEl.innerText = value;
+      } catch (err) {
+        errorEl.innerText = "Failed to load counter";
+        console.error(err);
+      }
+    }
+
+    // Increment counter
+    async function increment() {
+      try {
+        const value = await invoke("increment_counter");
+        counterEl.innerText = value;
+      } catch (err) {
+        errorEl.innerText = "Failed to increment counter";
+        console.error(err);
+      }
+    }
+
+    // Events
+    btn.addEventListener("click", increment);
+    window.addEventListener("DOMContentLoaded", loadCounter);
+  </script>
+</body>
+</html>
